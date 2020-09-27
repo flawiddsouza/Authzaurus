@@ -79,7 +79,11 @@ app.get('/logout', isAuthenticated, (req, res) => {
 
 availableApps.forEach(availableApp => {
     if(fs.existsSync(getAbsolutePath(`apps/${availableApp}/app.js`))) {
-        app.use(`/apps/${availableApp}`, isAuthenticated, require(`./apps/${availableApp}/app.js`)(server))
+        try {
+            app.use(`/apps/${availableApp}`, isAuthenticated, require(`./apps/${availableApp}/app.js`)(server))
+        } catch {
+            app.use(`/apps/${availableApp}`, isAuthenticated, require(`./apps/${availableApp}/app.js`))
+        }
     } else {
         app.use(`/apps/${availableApp}`, isAuthenticated, express.static(getAbsolutePath(`apps/${availableApp}/public`)))
     }
